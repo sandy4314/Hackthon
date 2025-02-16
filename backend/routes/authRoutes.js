@@ -4,16 +4,24 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const router = express.Router();
 const User = require("../models/User"); // Ensure you have a User model
+
+
 // User Signup
 router.post("/signup", async (req, res) => {
-    const { username, password, mobileNumber, address } = req.body;
+    const { username, email, password, mobileNumber, address } = req.body;
   
     try {
       let user = await User.findOne({ username });
       if (user) {
         return res.status(400).json({ message: "Username already exists" });
       }
-  
+
+      // Check if email already exists
+      let emailExists = await User.findOne({ email });
+      if (emailExists) {
+        return res.status(400).json({ message: "Email already registered" });
+      }
+
       // Hash password
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
@@ -21,6 +29,7 @@ router.post("/signup", async (req, res) => {
       // Create new user
       user = new User({
         username,
+        email,  // Storing email
         password: hashedPassword,
         mobileNumber,
         address,
@@ -32,8 +41,7 @@ router.post("/signup", async (req, res) => {
       console.error("Error registering user:", error);
       res.status(500).json({ message: "Server error" });
     }
-  });
-  
+});
 
 // User Login
 router.post("/login", async (req, res) => {
@@ -64,6 +72,7 @@ router.post("/login", async (req, res) => {
       {
         userId: user._id,
         username: user.username,
+        email: user.email,  // Include email in JWT
         role: "user",
         mobileNumber: user.mobileNumber, // Include mobile number
         address: user.address, // Include address
@@ -72,7 +81,13 @@ router.post("/login", async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.json({ token, role: "user", mobileNumber: user.mobileNumber, address: user.address });
+    res.json({ 
+      token, 
+      role: "user", 
+      email: user.email,  // Sending email in response
+      mobileNumber: user.mobileNumber, 
+      address: user.address 
+    });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }

@@ -1,13 +1,28 @@
 const Complaint = require('../models/Complaint');
-
 const User = require("../models/User");
+const multer = require("multer");
+const path = require("path");
+
+// Set up storage for images
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Save files in "uploads/" folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+  },
+});
+
+// Multer middleware
+const upload = multer({ storage });
 
 const createComplaint = async (req, res) => {
   try {
     console.log("🔍 Incoming Complaint Request:", req.body);
-    console.log("🔑 Decoded Token User:", req.user);
+    console.log("📸 Uploaded File:", req.file);
 
     const { issueType, description, priority } = req.body;
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : null; // Save relative path
 
     if (!req.user || !req.user.userId) {
       return res.status(401).json({ message: "Unauthorized: User ID missing from token" });
@@ -23,6 +38,7 @@ const createComplaint = async (req, res) => {
       issueType,
       description,
       priority,
+      imagePath, // ✅ Save the image path
     });
 
     await newComplaint.save();
@@ -38,10 +54,10 @@ const createComplaint = async (req, res) => {
 
 const getComplaints = async (req, res) => {
   try {
-    console.log("User making request:", req.user); // Debugging line
+    console.log("User making request:", req.user);
 
     const complaints = await Complaint.find({ userId: req.user.userId });
-    console.log("Complaints found:", complaints); // Debugging line
+    console.log("Complaints found:", complaints);
 
     if (complaints.length === 0) {
       return res.status(200).json({ message: "No complaints found" });
@@ -53,7 +69,6 @@ const getComplaints = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 const updateComplaint = async (req, res) => {
   const { complaintId, status } = req.body;
@@ -91,4 +106,4 @@ const getAllComplaints = async (req, res) => {
   }
 };
 
-module.exports = { createComplaint, getComplaints, updateComplaint, getAllComplaints };
+module.exports = { createComplaint: [upload.single("image"), createComplaint], getComplaints, updateComplaint, getAllComplaints };
