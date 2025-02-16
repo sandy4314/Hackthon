@@ -1,0 +1,127 @@
+/* General Dashboard Styles */
+.dashboard-container {
+    padding: 40px;
+    background-color: #f7f7f7;
+  }
+  
+  .dashboard-title {
+    font-size: 2rem;
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-error {
+    color: red;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  /* Container for Complaint Cards */
+  .complaints-cards-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Ensures 3 cards per row */
+    gap: 20px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  /* Individual Complaint Card */
+  .complaint-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    height: auto; /* Adjust height */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+  }
+  
+  .complaint-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Card Image */
+  .complaint-card-image {
+    width: 100%;
+    height: 150px; /* Reduced height */
+    overflow: hidden;
+    margin-bottom: 15px;
+  }
+  
+  .complaint-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  /* Card Details */
+  .complaint-card-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: auto;
+  }
+  
+  /* Headings and Values Styling */
+  .complaint-card-issue,
+  .complaint-card-description-heading,
+  .complaint-card-status-heading,
+  .complaint-card-priority-heading {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .complaint-card-description,
+  .complaint-card-status,
+  .complaint-card-priority {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 10px;
+    text-align: left; /* Aligning text to the left */
+  }
+  
+  /* Center align status text */
+  .complaint-card-status {
+    text-align: center;
+  }
+  
+  .complaint-card-issue-value,
+  .complaint-card-description,
+  .complaint-card-status,
+  .complaint-card-priority {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 15px;
+    text-align: left; /* Align text to the left */
+  }
+  
+  /* Media Queries for Responsive Design */
+  @media (max-width: 768px) {
+    .dashboard-title {
+      font-size: 1.5rem;
+    }
+  
+    .complaints-cards-container {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid for smaller screens */
+    }
+  
+    .complaint-card {
+      padding: 15px;
+    }
+  
+    .complaint-card-issue {
+      font-size: 1rem;
+    }
+  
+    .complaint-card-description-heading {
+      font-size: 1rem;
+    }
+  }
+  
